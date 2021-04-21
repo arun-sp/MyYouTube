@@ -49,16 +49,94 @@ header = []
 title = []
 
 for i in ytWatchHistory:
-    if ('titleUrl' in i) and ('time' in i):
+    if ('titleUrl' in i) and ('time' in i): 
         titleUrl.append(i["titleUrl"])
         time.append(i["time"])
         header.append(i["header"])
-        title.append(i["title"])        
         
-df = pd.DataFrame(list(zip(header, title, titleUrl, time)), columns = ["Header", "Title", "Url", "Time"])
+df = pd.DataFrame(list(zip(header, titleUrl, time)), columns = ["Header", "Url", "Time"])
 
 ```
 
+Great. Now we have our watch history in a nice DataFrame with columns Header (which denotes if the service is YouTube or YouTube Music), Title (Title of the video), URL (URL of the video), Time (Time of watch). Note that, right now the Time is stored as String. We have to convert it to a DateTime datatype.
+
+```markdown
+df["Time"] = df["Time"].str.split(".", expand=True)[0]
+df["Time"] = pd.to_datetime(df["Time"], format='%Y-%m-%dT%H:%M:%S', utc=True)
+df["Time"] = df["Time"].dt.tz_convert('Asia/Kolkata')
+
+```
+
+Now I don't want to look at all the data. I just want to consider my watch history between Jan of 2019 to March of 2021. Let's filter out the data that is out of this time range.
+
+'''markdown
+
+fr = datetime.datetime(2019,1,1,0,0,0,0, pytz.timezone('Asia/Calcutta'))
+df = df.loc[(df["Time"]>fr)]
+
+to = datetime.datetime(2021,4,1,0,0,0,0, pytz.timezone('Asia/Calcutta'))
+df = df.loc[(df["Time"]<to)]
+
+df = df.reset_index().drop('index', axis=1)
+
+'''
+
+We can't stop there. Notice that this DataFrame has data from both YouTube and YouTube Music. But I don't want to consider YouTube Music as I only use it for backgroud playing while I am doing some other work. So YouTube Music is not really something I actively spend my focus on. So let's remove that and store it a separate variable, just in case we want to do something with it in the future. 
+
+```markdown
+
+dfYTMusic = dfYTMusic.reset_index().drop('index', axis=1)
+
+df = df.reset_index().drop('index', axis=1)
+
+```
+
+### Making API calls
+
+Before calling the API, there is just a small thing to do. We want information such as Title, Channel, Category and Tags associated with each video in the DataFrame. So let's create new empty columns in the DataFrame to accomodate that data. Also, we need an identifier to pass with the API call to tell Google what video we want the information about. Thankfully, the Id for each video is at the end of the video URL. So let's extract that Id from the URL and store it in a new column - Id
+
+```markdown
+
+df["Title"] = None
+df["Category"] = None
+df["Channel"] = None
+df["Tags"] = None
+
+df["Id"] = df["Url"].str.split("v=", expand=True)[1]
+
+```
+
+Now we are ready to make our API calls. Google happen to have a great [documentation](https://developers.google.com/youtube/v3/docs) on their API methods. That makes the job easy. 
+
+First, let's build a API Service object according to the documentation.
+
+```markdown
+
+youtube = build('youtube', 'v3', developerKey=ytAPI)
+
+```
+
+Once we are done with that, now we can call API methods on all the rows in our DataFrame. The following snippet of code basically goes to each row and get the Id of the video. Then it calls the YouTube API. We want the information about the Video. So we pass the Videos() reference along with the API call to indicate what information we want. Then we parse the response and store it in the respectives rows in the DataFrame.
+
+```markdown
+
+for i in range(len(df)):
+    
+    try:
+        request = youtube.videos().list(part='snippet', id=df.loc[i]['Id'])
+        res = request.execute()
+        try:
+            df.loc[i,'Title'] = res['items'][0]['snippet']['title']
+            df.loc[i,'Channel'] = res['items'][0]['snippet']['channelTitle']
+            df.loc[i,'Category'] = res['items'][0]['snippet']['categoryId']
+            df.loc[i,'Tags'] = str(res['items'][0]['snippet']['tags']).replace("[",'').replace("]",'')
+        except:
+            continue
+    
+    except:
+        continue
+
+```
 
 
 You can use the [editor on GitHub](https://github.com/arun-sp/YouTubeAnalytics/edit/main/docs/index.md) to maintain and preview the content for your website in Markdown files.
