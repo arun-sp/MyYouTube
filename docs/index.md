@@ -29,6 +29,37 @@ ytAPI = '''My Google API Key'''
 
 ```
 
+### Importing the data
+
+Once we have the required libraries installed, the next thing to do is to import the watch-history.json data.
+
+```markdown
+
+ytWatchHistory = json.load(open("yt-watch-history.json"))
+
+```
+
+Next, we will reformat this data into a nice DataFrame which will be better to work with.
+
+```markdown
+
+titleUrl = []
+time = []
+header = []
+title = []
+
+for i in ytWatchHistory:
+    if ('titleUrl' in i) and ('time' in i):
+        titleUrl.append(i["titleUrl"])
+        time.append(i["time"])
+        header.append(i["header"])
+        title.append(i["title"])        
+        
+df = pd.DataFrame(list(zip(header, title, titleUrl, time)), columns = ["Header", "Title", "Url", "Time"])
+
+```
+
+
 
 You can use the [editor on GitHub](https://github.com/arun-sp/YouTubeAnalytics/edit/main/docs/index.md) to maintain and preview the content for your website in Markdown files.
 
