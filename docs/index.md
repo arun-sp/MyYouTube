@@ -1,16 +1,19 @@
-## Welcome to GitHub Pages
+# Welcome to GitHub Pages
 
 Recently, I feel like my time on YouTube has increased considerably. So I was really curious to understand more about how I am spending that time. And hence this quick project. Or more like an exercise in Python.
 
-### First, we need data
+
+## First, we need data
 
 For this, I headed to [Google Takeout](https://takeout.google.com/settings/takeout) and dowloaded the *YouTube and YouTube Music* data linked to my Google account in an easy-to-work-with JSON format. Of the downloaded items, we are only interested in the file watch-history.json. So I extracted it and stored it in my working directory. 
 
-### Google API Client
+
+## Google API Client
 
 Since we are going to need Google's YouTube Data API, we need to head to https://console.developers.google.com/ and create a project, activate YouTube Data API and get the API credentials. This [video](https://www.youtube.com/watch?v=th5_9woFJmk) shows how. Alright, now we have everything we need to get started.
 
-### Some helpful libraries
+
+## Some helpful libraries
 
 ```markdown
 
@@ -29,7 +32,8 @@ ytAPI = '''My Google API Key'''
 
 ```
 
-### Importing the data
+
+## Importing the data
 
 Once we have the required libraries installed, the next thing to do is to import the watch-history.json data.
 
@@ -91,7 +95,8 @@ df = df.reset_index().drop('index', axis=1)
 
 ```
 
-### Making API calls
+
+## Making API calls
 
 Before calling the API, there is just a small thing to do. We want information such as Title, Channel, Category and Tags associated with each video in the DataFrame. So let's create new empty columns in the DataFrame to accomodate that data. Also, we need an identifier to pass with the API call to tell Google what video we want the information about. Thankfully, the Id for each video is at the end of the video URL. So let's extract that Id from the URL and store it in a new column - Id
 
@@ -138,7 +143,8 @@ for i in range(len(df)):
 
 ```
 
-### Data Cleaning
+
+## Data Cleaning
 
 Alright. Now we have the required data for all the rows (videos). But there can be few instances where a video's related have not been retrieved. This is probably becuase the video might have been taken down or it could have been a private video. So let's first go ahead and drop these rows. 
 
