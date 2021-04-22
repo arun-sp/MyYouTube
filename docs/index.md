@@ -50,7 +50,6 @@ Next, we will reformat this data into a nice DataFrame which will be better to w
 titleUrl = []
 time = []
 header = []
-title = []
 
 for i in ytWatchHistory:
     if ('titleUrl' in i) and ('time' in i): 
@@ -65,6 +64,7 @@ df = pd.DataFrame(list(zip(header, titleUrl, time)), columns = ["Header", "Url",
 Great. Now we have our watch history in a nice DataFrame with columns Header (which denotes if the service is YouTube or YouTube Music), Title (Title of the video), URL (URL of the video), Time (Time of watch). Note that, right now the Time is stored as String. We have to convert it to a DateTime datatype.
 
 ```markdown
+
 df["Time"] = df["Time"].str.split(".", expand=True)[0]
 df["Time"] = pd.to_datetime(df["Time"], format='%Y-%m-%dT%H:%M:%S', utc=True)
 df["Time"] = df["Time"].dt.tz_convert('Asia/Kolkata')
@@ -178,6 +178,17 @@ df = df.replace({'Category': catDict})
 
 ```
 
+Personally, I have a habit of keeping YouTube in the background playing songs on Autoplay while I do something else. So I am not actively spending my time on YouTube when I listen to music. So I should probably remove Music related videos completely from the DataFrame to get a accurate sense of my time spent on YouTube. Let's do that. Let's create a new DataFrame which doens't have any music related videos. We can do this by excluding all the Videos that are associated with the Category Music. This is not 100% accurate as there can be some non-music videos that might be tagged as Music. But it's a small number. So that's fine.
+
+```markdown
+
+df_minusMusicCat = df.loc[~(df['Category']=='Music')]
+df_minusMusicCat.reset_index(inplace=True)
+df_minusMusicCat.drop('index', axis=1, inplace=True)
+
+```
+
+That's it. We have the data that we need to start plotting to get a sense of my time on YouTube. 
 
 
 
