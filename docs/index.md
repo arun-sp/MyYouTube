@@ -69,7 +69,7 @@ df["Time"] = df["Time"].dt.tz_convert('Asia/Kolkata')
 
 Now I don't want to look at all the data. I just want to consider my watch history between Jan of 2019 to March of 2021. Let's filter out the data that is out of this time range.
 
-'''markdown
+```markdown
 
 fr = datetime.datetime(2019,1,1,0,0,0,0, pytz.timezone('Asia/Calcutta'))
 df = df.loc[(df["Time"]>fr)]
@@ -79,7 +79,7 @@ df = df.loc[(df["Time"]<to)]
 
 df = df.reset_index().drop('index', axis=1)
 
-'''
+```
 
 We can't stop there. Notice that this DataFrame has data from both YouTube and YouTube Music. But I don't want to consider YouTube Music as I only use it for backgroud playing while I am doing some other work. So YouTube Music is not really something I actively spend my focus on. So let's remove that and store it a separate variable, just in case we want to do something with it in the future. 
 
@@ -137,6 +137,46 @@ for i in range(len(df)):
         continue
 
 ```
+
+### Data Cleaning
+
+Alright. Now we have the required data for all the rows (videos). But there can be few instances where a video's related have not been retrieved. This is probably becuase the video might have been taken down or it could have been a private video. So let's first go ahead and drop these rows. 
+
+```markdown
+
+df = df.loc[~df['Title'].isnull()]
+df.reset_index(inplace=True)
+df.drop('index', axis=1, inplace=True)
+
+```
+
+Notice that we have a column called Category. This essentially specifies what category a particular video belongs to such as Music, Education, Entertainment, Comendy and so. But this information is not provided explicityly but as codes. Each code denotes a different category. So now we have to get the Category name for each of these codes. Thankfully, YouTube API has a VideoCategories() reference. We can use this to get the required information. 
+
+```markdown
+
+request = youtube.videoCategories().list(part='snippet', regionCode='US')
+cat = request.execute()
+
+catDict = {}
+
+for i in cat['items']:
+    catDict.update({i['id']:i['snippet']['title']})
+
+```
+
+Perfect. Now we have a dictionary which has the mapping of these codes and the respective Category names. So let's use this dictionary to replace the codes in our DataFrame. 
+
+```markdown
+
+df = df.replace({'Category': catDict})
+
+```
+
+
+
+
+
+
 
 
 You can use the [editor on GitHub](https://github.com/arun-sp/YouTubeAnalytics/edit/main/docs/index.md) to maintain and preview the content for your website in Markdown files.
