@@ -1,4 +1,4 @@
-# Welcome to GitHub Pages
+# Understanding my time spent on YouTube
 
 Recently, I feel like my time on YouTube has increased considerably. So I was really curious to understand more about how I am spending that time. And hence this quick project. Or more like an exercise in Python.
 
