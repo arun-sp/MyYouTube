@@ -37,7 +37,7 @@ ytAPI = '''My Google API Key'''
 
 Once we have the required libraries installed, the next thing to do is to import the watch-history.json data.
 
-```markdown
+```python
 
 ytWatchHistory = json.load(open("yt-watch-history.json"))
 
@@ -192,7 +192,7 @@ That's it. We have the data that we need to start plotting to get a sense of my 
 
 ## Plots
 
-- ### My YouTube Watch Actvity Distribution Since 2019
+* ### My YouTube Watch Actvity Distribution Since 2019
 
 Let's plot a histogram type plot of the Time column. This will show how many videos I have been watching on YouTube every month. 
 
@@ -223,7 +223,7 @@ fig.update_layout(
 
 Okay. It's pretty clear I was doing okay until August of 2020 after which there has been a big surge. Not to mention, in October my watch activity has nearly quadrupled. Let me look at the month alone and see if I can figure out the reason. 
 
-- ### What happened in the month of Oct 2020?
+* ### What happened in the month of Oct 2020?
 
 Alright. So here I am plotting the top 20 categories I watched during the month of Oct 2020. Let's see if that helps. 
 
@@ -280,41 +280,4 @@ fig.update_layout(
 ```
 <img src="static/ChannelsOct.png" alt="Videos Watched Per Month" class="inline"/>
 
-
-
-
-You can use the [editor on GitHub](https://github.com/arun-sp/YouTubeAnalytics/edit/main/docs/index.md) to maintain and preview the content for your website in Markdown files.
-
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
-
-### Markdown
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/arun-sp/YouTubeAnalytics/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+So News & Politics formed a major chunk of my watch history during Oct 2020. And the top channels were MSNBC & CNN. Right. That was the US 2020 Election season. I was very involved in it at that time. That's the reason my watch numbers surged during September, October and November of 2020. No wonder CNN's ratings were their highest at that time. 
