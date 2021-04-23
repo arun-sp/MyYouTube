@@ -194,7 +194,7 @@ That's it. We have the data that we need to start plotting to get a sense of my 
 
 Let's plot a histogram type plot of the Time column. This will show how many videos I have been watching on YouTube every month. 
 
-```month
+```python
 
 df_['Year-Month'] = df_['Time'].dt.strftime('%Y-%m')
 tempDF = pd.pivot_table(df_, index='Year-Month', values='Title', aggfunc=lambda x:x.count())
