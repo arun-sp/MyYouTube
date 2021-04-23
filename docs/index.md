@@ -15,7 +15,7 @@ Since we are going to need Google's YouTube Data API, we need to head to https:/
 
 ## Some helpful libraries
 
-```markdown
+```python
 
 import json
 import pandas as pd
@@ -45,7 +45,7 @@ ytWatchHistory = json.load(open("yt-watch-history.json"))
 
 Next, we will reformat this data into a nice DataFrame which will be better to work with.
 
-```markdown
+```python
 
 titleUrl = []
 time = []
@@ -63,7 +63,7 @@ df = pd.DataFrame(list(zip(header, titleUrl, time)), columns = ["Header", "Url",
 
 Great. Now we have our watch history in a nice DataFrame with columns Header (which denotes if the service is YouTube or YouTube Music), Title (Title of the video), URL (URL of the video), Time (Time of watch). Note that, right now the Time is stored as String. We have to convert it to a DateTime datatype.
 
-```markdown
+```python
 
 df["Time"] = df["Time"].str.split(".", expand=True)[0]
 df["Time"] = pd.to_datetime(df["Time"], format='%Y-%m-%dT%H:%M:%S', utc=True)
@@ -73,7 +73,7 @@ df["Time"] = df["Time"].dt.tz_convert('Asia/Kolkata')
 
 Now I don't want to look at all the data. I just want to consider my watch history between Jan of 2019 to March of 2021. Let's filter out the data that is out of this time range.
 
-```markdown
+```python
 
 fr = datetime.datetime(2019,1,1,0,0,0,0, pytz.timezone('Asia/Calcutta'))
 df = df.loc[(df["Time"]>fr)]
@@ -87,7 +87,7 @@ df = df.reset_index().drop('index', axis=1)
 
 We can't stop there. Notice that this DataFrame has data from both YouTube and YouTube Music. But I don't want to consider YouTube Music as I only use it for backgroud playing while I am doing some other work. So YouTube Music is not really something I actively spend my focus on. So let's remove that and store it a separate variable, just in case we want to do something with it in the future. 
 
-```markdown
+```python
 
 dfYTMusic = dfYTMusic.reset_index().drop('index', axis=1)
 
@@ -100,7 +100,7 @@ df = df.reset_index().drop('index', axis=1)
 
 Before calling the API, there is just a small thing to do. We want information such as Title, Channel, Category and Tags associated with each video in the DataFrame. So let's create new empty columns in the DataFrame to accomodate that data. Also, we need an identifier to pass with the API call to tell Google what video we want the information about. Thankfully, the Id for each video is at the end of the video URL. So let's extract that Id from the URL and store it in a new column - Id
 
-```markdown
+```python
 
 df["Title"] = None
 df["Category"] = None
@@ -115,7 +115,7 @@ Now we are ready to make our API calls. Google happen to have a great [documenta
 
 First, let's build a API Service object according to the documentation.
 
-```markdown
+```python
 
 youtube = build('youtube', 'v3', developerKey=ytAPI)
 
@@ -123,7 +123,7 @@ youtube = build('youtube', 'v3', developerKey=ytAPI)
 
 Once we are done with that, now we can call API methods on all the rows in our DataFrame. The following snippet of code basically goes to each row and get the Id of the video. Then it calls the YouTube API. We want the information about the Video. So we pass the Videos() reference along with the API call to indicate what information we want. Then we parse the response and store it in the respectives rows in the DataFrame.
 
-```markdown
+```python
 
 for i in range(len(df)):
     
@@ -148,7 +148,7 @@ for i in range(len(df)):
 
 Alright. Now we have the required data for all the rows (videos). But there can be few instances where a video's related have not been retrieved. This is probably becuase the video might have been taken down or it could have been a private video. So let's first go ahead and drop these rows. 
 
-```markdown
+```python
 
 df = df.loc[~df['Title'].isnull()]
 df.reset_index(inplace=True)
@@ -158,7 +158,7 @@ df.drop('index', axis=1, inplace=True)
 
 Notice that we have a column called Category. This essentially specifies what category a particular video belongs to such as Music, Education, Entertainment, Comendy and so. But this information is not provided explicityly but as codes. Each code denotes a different category. So now we have to get the Category name for each of these codes. Thankfully, YouTube API has a VideoCategories() reference. We can use this to get the required information. 
 
-```markdown
+```python
 
 request = youtube.videoCategories().list(part='snippet', regionCode='US')
 cat = request.execute()
@@ -172,7 +172,7 @@ for i in cat['items']:
 
 Perfect. Now we have a dictionary which has the mapping of these codes and the respective Category names. So let's use this dictionary to replace the codes in our DataFrame. 
 
-```markdown
+```python
 
 df = df.replace({'Category': catDict})
 
@@ -180,7 +180,7 @@ df = df.replace({'Category': catDict})
 
 Personally, I have a habit of keeping YouTube in the background playing songs on Autoplay while I do something else. So I am not actively spending my time on YouTube when I listen to music. So I should probably remove Music related videos completely from the DataFrame to get a accurate sense of my time spent on YouTube. Let's do that. Let's create a new DataFrame which doens't have any music related videos. We can do this by excluding all the Videos that are associated with the Category Music. This is not 100% accurate as there can be some non-music videos that might be tagged as Music. But it's a small number. So that's fine.
 
-```markdown
+```python
 
 df_ = df.loc[~(df['Category']=='Music')]
 df_.reset_index(inplace=True)
@@ -190,7 +190,7 @@ df_.drop('index', axis=1, inplace=True)
 
 That's it. We have the data that we need to start plotting to get a sense of my time on YouTube. 
 
-### My YouTube Watch Actvity Since 2019
+### * My YouTube Watch Actvity Distribution Since 2019
 
 Let's plot a histogram type plot of the Time column. This will show how many videos I have been watching on YouTube every month. 
 
@@ -218,6 +218,8 @@ fig.update_layout(
 
 ```
 <img src="static/VideosVMonth.png" alt="Videos Watched Per Month" class="inline"/>
+
+Okay. It's pretty clear I was doing okay until August of 2020 after which there has been a big surge. Not to mention, in October my watch activity has nearly quadrupled. Let me look at the month alone and see if I can figure out the reason. 
 
 
 
