@@ -6,15 +6,11 @@ Recently, I feel like my time on YouTube has increased considerably. So I was re
 ## First, we need data
 
 For this, I headed to [Google Takeout](https://takeout.google.com/settings/takeout) and dowloaded the *YouTube and YouTube Music* data linked to my Google account in an easy-to-work-with JSON format. Of the downloaded items, we are only interested in the file watch-history.json. So I extracted it and stored it in my working directory. 
-
----
-
+  
 ## Google API Client
 
 Since we are going to need Google's YouTube Data API, we need to head to https://console.developers.google.com/ and create a project, activate YouTube Data API and get the API credentials. This [video](https://www.youtube.com/watch?v=th5_9woFJmk) shows how. Alright, now we have everything we need to get started.
-
----
-
+  
 ## Some helpful libraries
 
 ```python
@@ -33,9 +29,7 @@ import numpy as np
 ytAPI = '''My Google API Key'''
 
 ```
-
----
-
+  
 ## Importing the data
 
 Once we have the required libraries installed, the next thing to do is to import the watch-history.json data.
@@ -97,9 +91,7 @@ dfYTMusic = dfYTMusic.reset_index().drop('index', axis=1)
 df = df.reset_index().drop('index', axis=1)
 
 ```
-
----
-
+  
 ## Making API calls
 
 Before calling the API, there is just a small thing to do. We want information such as Title, Channel, Category and Tags associated with each video in the DataFrame. So let's create new empty columns in the DataFrame to accomodate that data. Also, we need an identifier to pass with the API call to tell Google what video we want the information about. Thankfully, the Id for each video is at the end of the video URL. So let's extract that Id from the URL and store it in a new column - Id
@@ -146,9 +138,7 @@ for i in range(len(df)):
         continue
 
 ```
-
----
-
+  
 ## Data Cleaning
 
 Alright. Now we have the required data for all the rows (videos). But there can be few instances where a video's related have not been retrieved. This is probably becuase the video might have been taken down or it could have been a private video. So let's first go ahead and drop these rows. 
@@ -194,12 +184,10 @@ df_.drop('index', axis=1, inplace=True)
 ```
 
 That's it. We have the data that we need to start plotting to get a sense of my time on YouTube.
-
----
-
+  
 ## Plots
-
-*### My YouTube Watch Actvity Distribution Since 2019
+  
+* ### My YouTube Watch Actvity Distribution Since 2019
 
 Let's plot a histogram type plot of the Time column. This will show how many videos I have been watching on YouTube every month. 
 
@@ -229,7 +217,7 @@ fig.update_layout(
 <img src="static/VideosVMonth.png" alt="Videos Watched Per Month" class="inline"/>
 
 Okay. It's pretty clear I was doing okay until August of 2020 after which there has been a big surge. Not to mention, in October my watch activity has nearly quadrupled. Let me look at the month alone and see if I can figure out the reason. 
-
+  
 * ### What happened in the month of Oct 2020?
 
 Alright. So here I am plotting the top 20 categories I watched during the month of Oct 2020. Let's see if that helps. 
