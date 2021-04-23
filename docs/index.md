@@ -190,7 +190,9 @@ df_.drop('index', axis=1, inplace=True)
 
 That's it. We have the data that we need to start plotting to get a sense of my time on YouTube. 
 
-### - My YouTube Watch Actvity Distribution Since 2019
+###- My YouTube Watch Actvity Distribution Since 2019
+-### My YouTube Watch Actvity Distribution Since 2019
+- ### My YouTube Watch Actvity Distribution Since 2019
 
 Let's plot a histogram type plot of the Time column. This will show how many videos I have been watching on YouTube every month. 
 
