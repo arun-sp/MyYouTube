@@ -182,15 +182,42 @@ Personally, I have a habit of keeping YouTube in the background playing songs on
 
 ```markdown
 
-df_minusMusicCat = df.loc[~(df['Category']=='Music')]
-df_minusMusicCat.reset_index(inplace=True)
-df_minusMusicCat.drop('index', axis=1, inplace=True)
+df_ = df.loc[~(df['Category']=='Music')]
+df_.reset_index(inplace=True)
+df_.drop('index', axis=1, inplace=True)
 
 ```
 
 That's it. We have the data that we need to start plotting to get a sense of my time on YouTube. 
 
+### My YouTube Watch Actvity Since 2019
 
+Let's plot a histogram type plot of the Time column. This will show how many videos I have been watching on YouTube every month. 
+
+```month
+
+df_['Year-Month'] = df_['Time'].dt.strftime('%Y-%m')
+tempDF = pd.pivot_table(df_, index='Year-Month', values='Title', aggfunc=lambda x:x.count())
+tempDF.reset_index(inplace=True)
+tempDF.columns = ['Year-Month','Videos Watched']
+
+fig = go.Figure()
+fig.add_trace(go.Bar(y=tempDF['Videos Watched'], 
+                     x=tempDF['Year-Month'], 
+                     text=tempDF['Videos Watched'], 
+                     textposition='outside'))
+
+fig.update_layout(
+    bargap=0,
+    margin=dict(pad=5,l=80),
+    template='plotly_dark',
+    title='Videos Watched per Month',
+    xaxis=dict(title=dict(text='Month')),
+    yaxis=dict(title=dict(text='Videos Watched',standoff=0), automargin=True)
+)
+
+```
+<img src="static/VideosVMonth.png" alt="Videos Watched Per Month" class="inline"/>
 
 
 
