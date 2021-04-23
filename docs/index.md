@@ -7,11 +7,13 @@ Recently, I feel like my time on YouTube has increased considerably. So I was re
 
 For this, I headed to [Google Takeout](https://takeout.google.com/settings/takeout) and dowloaded the *YouTube and YouTube Music* data linked to my Google account in an easy-to-work-with JSON format. Of the downloaded items, we are only interested in the file watch-history.json. So I extracted it and stored it in my working directory. 
 
+---
 
 ## Google API Client
 
 Since we are going to need Google's YouTube Data API, we need to head to https://console.developers.google.com/ and create a project, activate YouTube Data API and get the API credentials. This [video](https://www.youtube.com/watch?v=th5_9woFJmk) shows how. Alright, now we have everything we need to get started.
 
+---
 
 ## Some helpful libraries
 
@@ -32,6 +34,7 @@ ytAPI = '''My Google API Key'''
 
 ```
 
+---
 
 ## Importing the data
 
@@ -95,6 +98,7 @@ df = df.reset_index().drop('index', axis=1)
 
 ```
 
+---
 
 ## Making API calls
 
@@ -143,6 +147,7 @@ for i in range(len(df)):
 
 ```
 
+---
 
 ## Data Cleaning
 
@@ -190,9 +195,11 @@ df_.drop('index', axis=1, inplace=True)
 
 That's it. We have the data that we need to start plotting to get a sense of my time on YouTube.
 
+---
+
 ## Plots
 
-* ### My YouTube Watch Actvity Distribution Since 2019
+*### My YouTube Watch Actvity Distribution Since 2019
 
 Let's plot a histogram type plot of the Time column. This will show how many videos I have been watching on YouTube every month. 
 
