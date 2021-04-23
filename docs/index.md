@@ -188,10 +188,10 @@ df_.drop('index', axis=1, inplace=True)
 
 ```
 
-That's it. We have the data that we need to start plotting to get a sense of my time on YouTube. 
+That's it. We have the data that we need to start plotting to get a sense of my time on YouTube.
 
-###- My YouTube Watch Actvity Distribution Since 2019
--### My YouTube Watch Actvity Distribution Since 2019
+## Plots
+
 - ### My YouTube Watch Actvity Distribution Since 2019
 
 Let's plot a histogram type plot of the Time column. This will show how many videos I have been watching on YouTube every month. 
@@ -223,6 +223,62 @@ fig.update_layout(
 
 Okay. It's pretty clear I was doing okay until August of 2020 after which there has been a big surge. Not to mention, in October my watch activity has nearly quadrupled. Let me look at the month alone and see if I can figure out the reason. 
 
+- ### What happened in the month of Oct 2020?
+
+Alright. So here I am plotting the top 20 categories I watched during the month of Oct 2020. Let's see if that helps. 
+
+```python
+
+tempDF = pd.DataFrame(df_.loc[df_['Year-Month']=='2020-10']['Category'].value_counts()[0:20])
+tempDF.reset_index(inplace=True)
+tempDF.columns = ['Category','Videos Watched']
+
+fig = go.Figure()
+fig.add_trace(go.Bar(y=tempDF['Videos Watched'], 
+                     x=tempDF['Category'], 
+                     text=tempDF['Videos Watched'], 
+                     textposition='outside'))
+
+fig.update_layout(
+    bargap=0,
+    margin=dict(pad=5,l=80,b=140),
+    template='plotly_dark',
+    title='Top Watched Categories in Oct 2020',
+    xaxis=dict(title=dict(text='Category')),
+    yaxis=dict(title=dict(text='Videos Watched',standoff=0), automargin=True, range=[0,860])
+
+)
+
+```
+
+<img src="static/CategoriesOct.png" alt="Videos Watched Per Month" class="inline"/>
+
+And the top 20 channels in the month of Oct 2020.
+
+```python
+
+tempDF = pd.DataFrame(df_.loc[df_['Year-Month']=='2020-10']['Channel'].value_counts()[0:20])
+tempDF.reset_index(inplace=True)
+tempDF.columns = ['Channel','Videos Watched']
+
+fig = go.Figure()
+fig.add_trace(go.Bar(y=tempDF['Videos Watched'], 
+                     x=tempDF['Channel'], 
+                     text=tempDF['Videos Watched'], 
+                     textposition='outside'))
+
+fig.update_layout(
+    bargap=0,
+    margin=dict(pad=5,l=80,b=190),
+    template='plotly_dark',
+    title='Top Watched Channels in Oct 2020',
+    xaxis=dict(title=dict(text='Channel')),
+    yaxis=dict(title=dict(text='Videos Watched',standoff=0), automargin=True, range=[0,180])
+
+)
+
+```
+<img src="static/ChannelsOct.png" alt="Videos Watched Per Month" class="inline"/>
 
 
 
