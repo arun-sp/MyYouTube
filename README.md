@@ -1,5 +1,5 @@
 # My YouTube
 
-Analysing my YouTube activity.
+Analyzing my YouTube activity.
 
 https://arun-sp.github.io/my-youtube/
