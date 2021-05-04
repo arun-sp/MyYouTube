@@ -1,4 +1,4 @@
-# My-YouTube
+# My YouTube
 
 Analysing my YouTube activity.
 
